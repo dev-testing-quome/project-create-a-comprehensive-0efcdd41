@@ -1,0 +1,200 @@
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Project Create A Comprehensive API",
+    "version": "v1",
+    "description": "A comprehensive legal case management system API."
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/cases": {
+      "get": {
+        "summary": "Get all cases",
+        "responses": {
+          "200": {
+            "description": "List of cases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Case" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new case",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Case" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Case created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Case" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cases/{id}": {
+      "get": {
+        "summary": "Get a case by ID",
+        "parameters": [
+          { "in": "path", "name": "id", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Case details",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Case" }
+              }
+            }
+          },
+          "404": {
+            "description": "Case not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a case",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          { "in": "path", "name": "id", "schema": { "type": "integer" }, "required": true }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Case" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Case updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Case" }
+              }
+            }
+          },
+          "404": {
+            "description": "Case not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a case",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          { "in": "path", "name": "id", "schema": { "type": "integer" }, "required": true }
+        ],
+        "responses": {
+          "204": { "description": "Case deleted" },
+          "404": { "description": "Case not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Case": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "readOnly": true },
+          "clientName": { "type": "string" },
+          "caseNumber": { "type": "string" },
+          "details": { "type": "string" }
+        },
+        "required": ["clientName", "caseNumber"]
+      }
+    }
+  }
+}
+```
